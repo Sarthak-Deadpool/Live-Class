@@ -67,6 +67,16 @@ const classroomSessionSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+classroomSessionSchema.index({
+  courseId: 1,
+  scheduledStart: 1,
+});
+
+classroomSessionSchema.index({
+  teacherId: 1,
+  lifecycle: 1,
+});
+
 const ClassroomSession = mongoose.model(
   "ClassroomSession",
   classroomSessionSchema,

@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      lowercase:true,
     },
     passwordHash: {
       type: String,
@@ -45,6 +46,10 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-const User = mongoose.model('User', userSchema);
+userSchema.index({
+  email: 1,
+});
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

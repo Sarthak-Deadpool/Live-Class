@@ -27,6 +27,14 @@ const courseSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+courseSchema.index({
+  teacherId:1,
+})
+
+courseSchema.index({
+  status:1
+})
+
 const Course = mongoose.model("Course", courseSchema);
 
 module.exports = Course;

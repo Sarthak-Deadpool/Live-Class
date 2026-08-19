@@ -17,7 +17,7 @@ const enrollmentSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["requested", "approved", "rejected", "removed"],
+      enum: ["requested", "active", "rejected", "withdrawn", "removed"],
     },
     studentCourseId: {
       type: String,
@@ -50,6 +50,27 @@ const enrollmentSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+enrollmentSchema.index(
+  {
+    studentId: 1,
+    courseId: 1,
+    status: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: {
+        $in: ["requested", "active"],
+      },
+    },
+  },
+);
+
+enrollmentSchema.index({
+  courseId: 1,
+  status: 1,
+});
 
 const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
 
