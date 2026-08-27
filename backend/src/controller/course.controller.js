@@ -65,14 +65,13 @@ const updateCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
     const teacherId = req.user.id;
-    const { title, description, status } = req.body;
+    const { title, description } = req.body;
 
     const response = await updateCourseService(
       courseId,
       teacherId,
       title,
       description,
-      status,
     );
 
     return res.status(200).json({ success: true, data: response });
