@@ -10,33 +10,7 @@ const createCourseService = async (teacherId, title, description, status) => {
     throw new Error("Teacher ID is required");
   }
 
-  if (!title) {
-    throw new Error("Course title is required");
-  }
-
-  if (typeof title !== "string") {
-    throw new Error("Course title must be string");
-  }
-
-  if (title.trim().length < 3 || title.trim().length > 50) {
-    throw new Error("Course title must be betwwen 3 to 50 characters");
-  }
-
-  if (description !== undefined) {
-    if (description && typeof description !== "string") {
-      throw new Error("Description must be string");
-    }
-
-    if (description && description?.trim().length > 2000) {
-      throw new Error("Description cannot exceed 2000 characters");
-    }
-  }
-
-  if (!["draft", "active"].includes(status)) {
-    throw new Error("Course status must be draft or active");
-  }
-
-  const trimmedTitle = title.trim();
+  const trimmedTitle = title?.trim();
   const trimmedDescription = description?.trim();
 
   const createdCourse = await Course.create({
@@ -144,25 +118,6 @@ const updateCourseService = async (courseId, teacherId, title, description) => {
     throw new Error("Teacher ID is required");
   }
 
-  if (title !== undefined) {
-    if (typeof title !== "string") {
-      throw new Error("Course title must be string");
-    }
-
-    if (title.trim().length < 3 || title.trim().length > 50) {
-      throw new Error("Course title must be betwwen 3 to 50 characters");
-    }
-  }
-  if (description !== undefined) {
-    if (description && typeof description !== "string") {
-      throw new Error("Description must be string");
-    }
-
-    if (description && description?.trim().length > 2000) {
-      throw new Error("Description cannot exceed 2000 characters");
-    }
-  }
-
   // finding course
   const course = await Course.findOne({
     _id: courseId,
@@ -177,10 +132,10 @@ const updateCourseService = async (courseId, teacherId, title, description) => {
   const updateData = {};
 
   if (title !== undefined) {
-    updateData.title = title.trim();
+    updateData.title = title?.trim();
   }
   if (description !== undefined) {
-    updateData.description = description.trim();
+    updateData.description = description?.trim();
   }
 
   const updatedCourse = await Course.findOneAndUpdate(
@@ -203,10 +158,6 @@ const updateCourseStatusService = async (courseId, teacherId, status) => {
 
   if (!teacherId) {
     throw new Error("Teacher ID is required");
-  }
-
-  if (!["draft", "active", "archived"].includes(status)) {
-    throw new Error("Course status must be draft or active or archived");
   }
 
   // find course

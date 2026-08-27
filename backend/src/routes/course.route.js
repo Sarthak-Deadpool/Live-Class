@@ -3,6 +3,13 @@
 const express = require("express");
 const router = express.Router();
 
+const validate = require("../middlewares/validate.middleware");
+const {
+  createCourseSchema,
+  updateCourseSchema,
+  updateCourseStatusSchema,
+} = require("../validations/course.validation");
+
 const {
   createCourse,
   getAllCourses,
@@ -11,10 +18,14 @@ const {
   updateCourseStatus,
 } = require("../controller/course.controller");
 
-router.post("/", createCourse);
+router.post("/", validate(createCourseSchema), createCourse);
 router.get("/", getAllCourses);
 router.get("/:id", getCourseById);
-router.patch("/:id", updateCourse);
-router.patch("/:id/status", updateCourseStatus);
+router.patch("/:id", validate(updateCourseSchema), updateCourse);
+router.patch(
+  "/:id/status",
+  validate(updateCourseStatusSchema),
+  updateCourseStatus,
+);
 
 module.exports = router;
