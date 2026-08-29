@@ -1,7 +1,6 @@
 /** @format */
 
 const express = require("express");
-const router = express.Router();
 
 const validate = require("../middlewares/validate.middleware");
 const {
@@ -17,6 +16,8 @@ const {
   updateCourse,
   updateCourseStatus,
 } = require("../controller/course.controller");
+
+const router = express.Router();
 
 router.post("/", validate(createCourseSchema), createCourse);
 router.get("/", getAllCourses);

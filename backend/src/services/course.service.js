@@ -1,5 +1,5 @@
 /** @format */
-
+const AppError = require("../errors/app.error");
 const Course = require("../models/course.model");
 const Enrollment = require("../models/enrollment.model");
 
@@ -7,7 +7,7 @@ const createCourseService = async (teacherId, title, description, status) => {
   // Validation
 
   if (!teacherId) {
-    throw new Error("Teacher ID is required");
+    throw new AppError("Teacher ID is required", 400);
   }
 
   const trimmedTitle = title?.trim();
@@ -26,14 +26,14 @@ const createCourseService = async (teacherId, title, description, status) => {
 const getAllCoursesService = async (userId, role) => {
   // validation
   if (!userId) {
-    throw new Error("User ID is required.");
+    throw new AppError("User ID is required", 400);
   }
   if (!role) {
-    throw new Error("Role is required");
+    throw new AppError("Role is required", 400);
   }
 
   if (!["teacher", "student"].includes(role)) {
-    throw new Error("Invalid role");
+    throw new AppError("Invalid role", 400);
   }
 
   // for teacher
@@ -62,19 +62,19 @@ const getAllCoursesService = async (userId, role) => {
 const getCourseByIdService = async (courseId, userId, role) => {
   // valdation
   if (!courseId) {
-    throw new Error("Course ID is required");
+    throw new AppError("Course ID is required", 400);
   }
 
   if (!userId) {
-    throw new Error("User ID is required");
+    throw new AppError("User ID is required", 400);
   }
 
   if (!role) {
-    throw new Error("Role is required");
+    throw new AppError("Role is required", 400);
   }
 
   if (!["teacher", "student"].includes(role)) {
-    throw new Error("Invalid role");
+    throw new AppError("Invalid role", 400);
   }
 
   // finding Course
@@ -82,7 +82,7 @@ const getCourseByIdService = async (courseId, userId, role) => {
   const course = await Course.findById(courseId);
 
   if (!course) {
-    throw new Error("Course not found");
+    throw new AppError("Course not found", 404);
   }
 
   // student
@@ -94,7 +94,7 @@ const getCourseByIdService = async (courseId, userId, role) => {
     });
 
     if (!enrollment) {
-      throw new Error("Forbidden");
+      throw new AppError("Forbidden", 403);
     }
 
     return course;
@@ -102,7 +102,7 @@ const getCourseByIdService = async (courseId, userId, role) => {
   // teacher
   if (role === "teacher") {
     if (course.teacherId.toString() !== userId) {
-      throw new Error("Forbidden");
+      throw new AppError("Forbidden", 403);
     }
     return course;
   }
@@ -111,11 +111,11 @@ const getCourseByIdService = async (courseId, userId, role) => {
 const updateCourseService = async (courseId, teacherId, title, description) => {
   // validation
   if (!courseId) {
-    throw new Error("Course ID is required");
+    throw new AppError("Course ID is required", 400);
   }
 
   if (!teacherId) {
-    throw new Error("Teacher ID is required");
+    throw new AppError("Teacher ID is required", 400);
   }
 
   // finding course
@@ -125,7 +125,7 @@ const updateCourseService = async (courseId, teacherId, title, description) => {
   });
 
   if (!course) {
-    throw new Error("Course not found");
+    throw new AppError("Course not found", 404);
   }
 
   // update course
@@ -153,11 +153,11 @@ const updateCourseStatusService = async (courseId, teacherId, status) => {
   // validation
 
   if (!courseId) {
-    throw new Error("Course ID is required");
+    throw new AppError("Course ID is required", 400);
   }
 
   if (!teacherId) {
-    throw new Error("Teacher ID is required");
+    throw new AppError("Teacher ID is required", 400);
   }
 
   // find course
@@ -167,17 +167,17 @@ const updateCourseStatusService = async (courseId, teacherId, status) => {
   });
 
   if (!course) {
-    throw new Error("Course not found");
+    throw new AppError("Course not found", 404);
   }
   // upadte course
   if (course.status === "draft" && status !== "active") {
-    throw new Error("Draft course can only be activated");
+    throw new AppError("Draft course can only be activated", 400);
   }
   if (course.status === "active" && status !== "archived") {
-    throw new Error("Active course can only be archived");
+    throw new AppError("Active course can only be archived", 400);
   }
   if (course.status === "archived") {
-    throw new Error("Archived course cannot change status");
+    throw new AppError("Archived course cannot change status", 400);
   }
   const updatedCourse = await Course.findOneAndUpdate(
     { _id: courseId, teacherId: teacherId },
