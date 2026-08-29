@@ -4,7 +4,10 @@ const { z } = require("zod");
 
 const registerUserSchema = z.object({
   name: z.string().trim().min(3).max(30),
-  email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
+  email: z
+    .string()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
+    .toLowerCase(),
   password: z
     .string()
     .regex(
@@ -14,4 +17,12 @@ const registerUserSchema = z.object({
   role: z.enum(["teacher", "student"]),
 });
 
-module.exports = { registerUserSchema };
+const loginUserSchema = z.object({
+  email: z
+    .string()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
+    .toLowerCase(),
+  password: z.string(),
+});
+
+module.exports = { registerUserSchema, loginUserSchema };

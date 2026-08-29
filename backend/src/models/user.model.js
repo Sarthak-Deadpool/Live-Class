@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["active", "inactive"],
+      enum: ["invited", "activation_pending", "active", "suspended", "deactivated"],
     },
     isEmailVerified: {
       type: Boolean,
@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    refreshTokenVersion: {
+      type: Number,
+      default: 0,
+    }
   },
   {
     timestamps: true,
