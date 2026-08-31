@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middlewares/error.middleware");
 const courseRoutes = require("./routes/course.route");
 const userRoutes = require("./routes/user.route");
+const enrollmentRoutes = require("./routes/enrollment.route");
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use(cookieParser());
 
 app.use("/api/auth", userRoutes);
 app.use("/api/course", courseRoutes);
+app.use("/api/enrollment", enrollmentRoutes);
 app.use(errorMiddleware);
 module.exports = app;
