@@ -6,7 +6,7 @@ const AppError = require("./error.middleware");
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startWith("Bearer ")) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new AppError("Unauthorized", 401);
   }
 

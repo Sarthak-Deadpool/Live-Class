@@ -9,6 +9,9 @@ const {
   updateCourseStatusSchema,
 } = require("../validations/course.validation");
 
+const auth = require("../middlewares/auth.middleware");
+const authorizationMiddleware = require("../middlewares/authorization.middleware");
+
 const {
   createCourse,
   getAllCourses,
@@ -19,12 +22,26 @@ const {
 
 const router = express.Router();
 
-router.post("/", validate(createCourseSchema), createCourse);
-router.get("/", getAllCourses);
-router.get("/:id", getCourseById);
-router.patch("/:id", validate(updateCourseSchema), updateCourse);
+router.post(
+  "/",
+  auth,
+  authorizationMiddleware("teacher"),
+  validate(createCourseSchema),
+  createCourse,
+);
+router.get("/", auth, getAllCourses);
+router.get("/:id", auth, getCourseById);
+router.patch(
+  "/:id",
+  auth,
+  authorizationMiddleware("teacher"),
+  validate(updateCourseSchema),
+  updateCourse,
+);
 router.patch(
   "/:id/status",
+  auth,
+  authorizationMiddleware("teacher"),
   validate(updateCourseStatusSchema),
   updateCourseStatus,
 );

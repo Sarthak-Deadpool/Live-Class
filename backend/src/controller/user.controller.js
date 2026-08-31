@@ -14,7 +14,6 @@ const registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
 
   const response = await registerUserService(name, email, password, role);
-    console.log(response);
   return res.status(201).json({
     success: true,
     data: response,
@@ -23,7 +22,7 @@ const registerUser = async (req, res) => {
 
 // verify email Api
 const verifyEmail = async (req, res) => {
-  const token = req.body.token;
+const token = req.body.token;
 
   const response = await verifyEmailService(token);
 

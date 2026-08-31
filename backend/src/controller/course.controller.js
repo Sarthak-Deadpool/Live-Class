@@ -11,7 +11,7 @@ const {
 // create course
 
 const createCourse = async (req, res) => {
-  const teacherId = req.user.id;
+  const teacherId = req.user.userId;
   const { title, description, status } = req.body;
 
   const response = await createCourseService(
@@ -25,7 +25,7 @@ const createCourse = async (req, res) => {
 };
 
 const getAllCourses = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.userId;
   const role = req.user.role;
 
   const response = await getAllCoursesService(userId, role);
@@ -35,7 +35,7 @@ const getAllCourses = async (req, res) => {
 
 const getCourseById = async (req, res) => {
   const courseId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.user.userId;
   const role = req.user.role;
 
   const response = await getCourseByIdService(courseId, userId, role);
@@ -45,7 +45,7 @@ const getCourseById = async (req, res) => {
 
 const updateCourse = async (req, res) => {
   const courseId = req.params.id;
-  const teacherId = req.user.id;
+  const teacherId = req.user.userId;
   const { title, description } = req.body;
 
   const response = await updateCourseService(
@@ -60,7 +60,7 @@ const updateCourse = async (req, res) => {
 
 const updateCourseStatus = async (req, res) => {
   const courseId = req.params.id;
-  const teacherId = req.user.id;
+  const teacherId = req.user.userId;
   const status = req.body.status;
 
   const response = await updateCourseStatusService(courseId, teacherId, status);
