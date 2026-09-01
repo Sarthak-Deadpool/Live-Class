@@ -8,9 +8,15 @@ const validate = require("../middlewares/validate.middleware");
 
 const {
   requestEnrollmentSchema,
+  approveEnrollmentSchema,
 } = require("../validations/enrollment.validation");
 
-const { requestEnrollment } = require("../controller/enrollment.controller");
+const {
+  requestEnrollment,
+  getMyEnrollments,
+  getCourseEnrollments,
+  approveEnrollment,
+} = require("../controller/enrollment.controller");
 
 const router = express.Router();
 
@@ -22,6 +28,21 @@ router.post(
   requestEnrollment,
 );
 
+router.get("/me", auth, authorizationMiddleware("student"), getMyEnrollments);
 
+router.get(
+  "/course/:courseId",
+  auth,
+  authorizationMiddleware("teacher"),
+  getCourseEnrollments,
+);
+
+router.patch(
+  "/approve/:enrollmentId",
+  auth,
+  authorizationMiddleware("teacher"),
+  validate(approveEnrollmentSchema),
+  approveEnrollment,
+);
 
 module.exports = router;

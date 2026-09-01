@@ -43,4 +43,48 @@ const requestEnrollmentService = async (studentId, courseId) => {
   return response;
 };
 
-module.exports = { requestEnrollmentService };
+const getMyEnrollmentsService = async (studentId) => {
+  if (!studentId) {
+    throw new AppError("Student Id is required", 400);
+  }
+
+  const enrollments = await Enrollment.find({ studentId: studentId });
+
+  return enrollments;
+};
+
+const getCourseEnrollmentsService = async (teacherId, courseId) => {
+  if (!teacherId) {
+    throw new AppError("Teacher ID is required", 400);
+  }
+  if (!courseId) {
+    throw new AppError("Course ID is required", 400);
+  }
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new AppError("Course does not exist", 404);
+  }
+
+  if (course.teacherId.toString() !== teacherId) {
+    throw new AppError("Unauthorized", 400);
+  }
+
+  const enrollments = await Enrollment.find({
+    courseId: courseId,
+  });
+
+  return enrollments;
+};
+
+const approveEnrollmentService = async (teacherId, enrollmentId) => {
+
+}
+
+module.exports = {
+  requestEnrollmentService,
+  getMyEnrollmentsService,
+  getCourseEnrollmentsService,
+  approveEnrollmentService,
+};
