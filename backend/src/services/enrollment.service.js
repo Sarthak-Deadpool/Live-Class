@@ -68,7 +68,7 @@ const getCourseEnrollmentsService = async (teacherId, courseId) => {
   }
 
   if (course.teacherId.toString() !== teacherId) {
-    throw new AppError("Unauthorized", 400);
+    throw new AppError("Forbidden", 403);
   }
 
   const enrollments = await Enrollment.find({
@@ -79,12 +79,171 @@ const getCourseEnrollmentsService = async (teacherId, courseId) => {
 };
 
 const approveEnrollmentService = async (teacherId, enrollmentId) => {
+  if (!teacherId) {
+    throw new AppError("Teacher ID is required", 400);
+  }
 
-}
+  const enrollment = await Enrollment.findById(enrollmentId);
+
+  if (!enrollment) {
+    throw new AppError("Enrollment not found", 404);
+  }
+
+  const courseId = enrollment.courseId;
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new AppError("Course not found", 404);
+  }
+
+  if (course.teacherId.toString() !== teacherId) {
+    throw new AppError("Forbidden", 403);
+  }
+
+  if (enrollment.status !== "requested") {
+    throw new AppError("Status must be requested", 400);
+  }
+
+  const response = await Enrollment.findByIdAndUpdate(
+    enrollmentId,
+    {
+      status: "active",
+      decidedAt: new Date(),
+      decidedBy: teacherId,
+    },
+    { new: true },
+  );
+
+  return response;
+};
+
+const rejectEnrollmentService = async (teacherId, enrollmentId) => {
+  if (!teacherId) {
+    throw new AppError("Teacher ID is required", 400);
+  }
+
+  const enrollment = await Enrollment.findById(enrollmentId);
+
+  if (!enrollment) {
+    throw new AppError("Enrollment not found", 404);
+  }
+
+  const courseId = enrollment.courseId;
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new AppError("Course not found", 404);
+  }
+
+  if (course.teacherId.toString() !== teacherId) {
+    throw new AppError("Forbidden", 403);
+  }
+
+  if (enrollment.status !== "requested") {
+    throw new AppError("Status must be requested", 400);
+  }
+
+  const response = await Enrollment.findByIdAndUpdate(
+    enrollmentId,
+    {
+      status: "rejected",
+      decidedAt: new Date(),
+      decidedBy: teacherId,
+    },
+    { new: true },
+  );
+
+  return response;
+};
+
+const withdrawEnrollmentService = async (studentId, enrollmentId) => {
+  if (!studentId) {
+    throw new AppError("Student ID is required", 400);
+  }
+
+  const enrollment = await Enrollment.findById(enrollmentId);
+
+  if (!enrollment) {
+    throw new AppError("Enrollment not found", 404);
+  }
+
+  if (enrollment.studentId.toString() !== studentId) {
+    throw new AppError("Forbidden", 403);
+  }
+
+  if (!["requested", "active"].includes(enrollment.status)) {
+    throw new AppError(
+      "You cannot withdrawn course which is not requested or active",
+      400,
+    );
+  }
+
+  const response = await Enrollment.findByIdAndUpdate(
+    enrollmentId,
+    {
+      status: "withdrawn",
+      decidedAt: new Date(),
+      decidedBy: studentId,
+    },
+    { new: true },
+  );
+
+  return response;
+};
+
+const removeEnrollmentService = async (
+  teacherId,
+  enrollmentId,
+  removalReason,
+) => {
+  if (!teacherId) {
+    throw new AppError("Teacher ID is required", 400);
+  }
+
+  const enrollment = await Enrollment.findById(enrollmentId);
+
+  if (!enrollment) {
+    throw new AppError("Enrollment not found", 404);
+  }
+
+  const courseId = enrollment.courseId;
+
+  const course = await Course.findById(courseId);
+
+  if (!course) {
+    throw new AppError("Course not found", 404);
+  }
+
+  if (course.teacherId.toString() !== teacherId) {
+    throw new AppError("Forbidden", 403);
+  }
+
+  if (enrollment.status === "removed") {
+    throw new AppError("Cannot remove course with status removed", 400);
+  }
+
+  const response = await Enrollment.findByIdAndUpdate(
+    enrollmentId,
+    {
+      status: "removed",
+      removedAt: new Date(),
+      removedBy: teacherId,
+      removalReason: removalReason,
+    },
+    { new: true },
+  );
+
+  return response;
+};
 
 module.exports = {
   requestEnrollmentService,
   getMyEnrollmentsService,
   getCourseEnrollmentsService,
   approveEnrollmentService,
+  rejectEnrollmentService,
+  withdrawEnrollmentService,
+  removeEnrollmentService,
 };

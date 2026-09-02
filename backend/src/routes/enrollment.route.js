@@ -9,6 +9,9 @@ const validate = require("../middlewares/validate.middleware");
 const {
   requestEnrollmentSchema,
   approveEnrollmentSchema,
+  rejectEnrollmentSchema,
+  withdrawEnrollmentSchema,
+  removeEnrollmentSchema,
 } = require("../validations/enrollment.validation");
 
 const {
@@ -16,6 +19,9 @@ const {
   getMyEnrollments,
   getCourseEnrollments,
   approveEnrollment,
+  rejectEnrollment,
+  withdrawEnrollment,
+  removeEnrollment,
 } = require("../controller/enrollment.controller");
 
 const router = express.Router();
@@ -31,7 +37,7 @@ router.post(
 router.get("/me", auth, authorizationMiddleware("student"), getMyEnrollments);
 
 router.get(
-  "/course/:courseId",
+  "/courseEnrollments/:courseId",
   auth,
   authorizationMiddleware("teacher"),
   getCourseEnrollments,
@@ -43,6 +49,30 @@ router.patch(
   authorizationMiddleware("teacher"),
   validate(approveEnrollmentSchema),
   approveEnrollment,
+);
+
+router.patch(
+  "/reject/:enrollmentId",
+  auth,
+  authorizationMiddleware("teacher"),
+  validate(rejectEnrollmentSchema),
+  rejectEnrollment,
+);
+
+router.patch(
+  "/withdraw/:enrollmentId",
+  auth,
+  authorizationMiddleware("student"),
+  validate(withdrawEnrollmentSchema),
+  withdrawEnrollment,
+);
+
+router.patch(
+  "/remove/:enrollmentId",
+  auth,
+  authorizationMiddleware("teacher"),
+  validate(removeEnrollmentSchema),
+  removeEnrollment,
 );
 
 module.exports = router;

@@ -5,6 +5,9 @@ const {
   getMyEnrollmentsService,
   getCourseEnrollmentsService,
   approveEnrollmentService,
+  rejectEnrollmentService,
+  withdrawEnrollmentService,
+  removeEnrollmentService,
 } = require("../services/enrollment.service");
 
 // request enrollment
@@ -59,9 +62,53 @@ const approveEnrollment = async (req, res) => {
   });
 };
 
+const rejectEnrollment = async (req, res) => {
+  const teacherId = req.user.userId;
+  const enrollmentId = req.params.enrollmentId;
+
+  const response = await rejectEnrollmentService(teacherId, enrollmentId);
+
+  return res.status(200).json({
+    success: true,
+    data: response,
+  });
+};
+
+const withdrawEnrollment = async (req, res) => {
+  const studentId = req.user.userId;
+  const enrollmentId = req.params.enrollmentId;
+
+  const response = await withdrawEnrollmentService(studentId, enrollmentId);
+
+  return res.status(200).json({
+    success: true,
+    data: response,
+  });
+};
+
+const removeEnrollment = async (req, res) => {
+  const teacherId = req.user.userId;
+  const enrollmentId = req.params.enrollmentId;
+  const removalReason = req.body.removalReason;
+
+  const response = await removeEnrollmentService(
+    teacherId,
+    enrollmentId,
+    removalReason,
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: response,
+  });
+};
+
 module.exports = {
   requestEnrollment,
   getMyEnrollments,
   getCourseEnrollments,
   approveEnrollment,
+  rejectEnrollment,
+  withdrawEnrollment,
+  removeEnrollment,
 };
