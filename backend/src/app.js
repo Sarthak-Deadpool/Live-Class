@@ -7,6 +7,7 @@ const courseRoutes = require("./routes/course.route");
 const userRoutes = require("./routes/user.route");
 const enrollmentRoutes = require("./routes/enrollment.route");
 const classroomSessionRoutes = require("./routes/classroomSession.route");
+const livekitRoutes = require("./routes/livekit.route");
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use("/api/auth", userRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
 app.use("/api/classroomSession", classroomSessionRoutes);
+app.use("/api/livekit", livekitRoutes);
 app.use(errorMiddleware);
 module.exports = app;
