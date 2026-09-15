@@ -20,6 +20,7 @@
     "livekit-server-sdk": "^2.18.0",
     "mongoose": "^9.9.3",
     "nodemailer": "^9.0.6",
+    "socket.io": "^4.8.3",
     "zod": "^4.4.3"
   }
 }

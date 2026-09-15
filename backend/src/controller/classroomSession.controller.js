@@ -1,5 +1,7 @@
 /** @format */
 
+const { getSocketIO } = require("../sockets/socket.instance");
+
 const {
   createClassroomSessionService,
   getMySessionsService,
@@ -80,6 +82,15 @@ const startClassroomSession = async (req, res) => {
 
   const response = await startClassroomSessionService(teacherId, sessionId);
 
+  const io = getSocketIO();
+
+  io.to(`course:${response.courseId}`).emit("class:started", {
+    sessionId: response._id,
+    courseId: response.courseId,
+    lifecycle: response.lifecycle,
+    startedAt: response.liveRoom.startedAt,
+  });
+
   return res.status(200).json({
     success: true,
     data: response,
@@ -91,6 +102,15 @@ const endClassroomSession = async (req, res) => {
   const sessionId = req.params.sessionId;
 
   const response = await endClassroomSessionService(teacherId, sessionId);
+
+  const io = getSocketIO();
+
+  io.to(`course:${response.courseId}`).emit("class:ended", {
+    sessionId: response._id,
+    courseId: response.courseId,
+    lifecycle: response.lifecycle,
+    endedAt: response.liveRoom.endedAt,
+  });
 
   return res.status(200).json({
     success: true,
@@ -120,6 +140,17 @@ const changeClassroomSessionMode = async (req, res) => {
     sessionId,
     mode,
   );
+
+  if (response.mode === "online") {
+    const io = getSocketIO();
+
+    io.to(`course:${response.courseId}`).emit("class:online", {
+      sessionId: response._id,
+      courseId: response.courseId,
+      mode: response.mode,
+      modeChangedAt: response.modeChangedAt,
+    });
+  }
 
   return res.status(200).json({
     success: true,
