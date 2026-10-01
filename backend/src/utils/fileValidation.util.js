@@ -11,7 +11,7 @@ const validateResourceFile = async (file) => {
   const mimeType = file.mimetype;
   const buffer = file.buffer;
 
-  // PDF
+  // PDF file
   if (mimeType === "application/pdf") {
     const signature = Buffer.from("%PDF-");
 
@@ -22,7 +22,7 @@ const validateResourceFile = async (file) => {
     return true;
   }
 
-  // PNG
+  // PNG file
   if (mimeType === "image/png") {
     const signature = Buffer.from([
       0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
@@ -35,7 +35,7 @@ const validateResourceFile = async (file) => {
     return true;
   }
 
-  // JPEG
+  // JPEG file
   if (mimeType === "image/jpeg") {
     if (
       buffer.length < 3 ||
@@ -49,7 +49,7 @@ const validateResourceFile = async (file) => {
     return true;
   }
 
-  // WebP
+  // WebP file
   if (mimeType === "image/webp") {
     if (
       buffer.length < 12 ||
@@ -62,7 +62,7 @@ const validateResourceFile = async (file) => {
     return true;
   }
 
-  // DOCX / PPTX
+  // DOCX / PPTX file
   if (
     mimeType ===
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
